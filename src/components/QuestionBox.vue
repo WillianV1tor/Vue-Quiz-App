@@ -10,7 +10,7 @@
 
             <b-list-group>
                 <b-list-group-item 
-                    v-for="(answer, index) in answers" 
+                    v-for="(answer, index) in shuffledAnswers" 
                     :key="index" 
                     @click.prevent="selectAnswer(index)" 
                     :class="answerClass(index)"
@@ -51,18 +51,18 @@
                 answered: false
             }
         },
-        computed: {
-           answers()  {
-               let answers = [...this.currentQuestion.incorrect_answers]
-               answers.push(this.currentQuestion.correct_answer)
-               return answers
-           }
-        },
+        // computed: {
+        //    answers()  {
+        //        let answers = [...this.currentQuestion.incorrect_answers]
+        //        answers.push(this.currentQuestion.correct_answer)
+        //        return answers
+        //    }
+        // },
         watch: {
             currentQuestion: {
                 immediate: true,
                 handler() {
-                    this.selectionIndex = null
+                    this.selectedIndex = null
                     this.shuffleAnswers()
                     this.answered = false
                 }
@@ -89,11 +89,19 @@
                 this.correctIndex = this.shuffledAnswers.indexOf(this.currentQuestion.correct_answer)
             },
             answerClass(index) {
-                [
-                    !answered && selectedIndex === index ? 'selected' :
-                    answered && correctIndex === index ? 'correct' :
-                    answered && selectedIndex === index && correctIndex !== index ? 'incorrect' : ''
-                ]
+                let answerClass = ''
+
+                if (!this.answered && this.selectedIndex === index) {
+                    answerClass = 'selected'
+                }
+                else if(this.answered && this.correctIndex === index) {
+                    answerClass = 'correct'
+                }
+                else if (this.answered && this.selectedIndex === index && this.correctIndex !== index) {
+                    answerClass = 'incorrect'
+                }
+
+                return answerClass
             }
         }
     }
